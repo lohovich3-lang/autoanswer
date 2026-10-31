@@ -72,12 +72,12 @@ async def handle_new_message(event):
 
     except Exception as e:
         print(f"[-] Ошибка при отправке автоответа: {e}")
-
 # ----------------------------------------------------------------------
 # 3. АСИНХРОННЫЙ ЗАПУСК ДЛЯ Docker / Bothost
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
     print("🤖 Юзербот-автоответчик успешно запущен и следит за чатами...")
-    # Безопасный запуск в контейнере без интерактивного ввода номера
-    client.loop.run_until_complete(client.start())
-    client.loop.run_until_complete(client.run_until_disconnected())
+    
+    # Запускаем клиента и удерживаем его подключенным
+    client.start()
+    client.run_until_disconnected()
