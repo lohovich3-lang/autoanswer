@@ -6,7 +6,7 @@ from telethon import TelegramClient, events
 # ----------------------------------------------------------------------
 API_ID = int(os.environ.get("API_ID", 0))          # Замените на ваш api_id (число)
 API_HASH = os.environ.get("API_HASH", "") # Замените на ваш api_hash - сделано в сайте
-session_path = "/app/user_session"
+session_path = "/app/user_session.session"
 
 
 # Текст фиксированного автоответа
