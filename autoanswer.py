@@ -1,13 +1,15 @@
 import os
+import asyncio
 from telethon import TelegramClient, events
+from telethon.sessions import StringSession
 
 # ----------------------------------------------------------------------
-# 1. НАСТРОЙКИ (Ваши данные)
+# 1. НАСТРОЙКИ (Данные автоматически подтягиваются из панели Bothost)
 # ----------------------------------------------------------------------
-API_ID = int(os.environ.get("API_ID", 0))          # Замените на ваш api_id (число)
-API_HASH = os.environ.get("API_HASH", "") # Замените на ваш api_hash - сделано в сайте
-session_path = "/app/user_session.session"
-
+API_ID = int(os.environ.get("API_ID", 0))
+API_HASH = os.environ.get("API_HASH", "")
+# Переменная для текстовой строки сессии из настроек хостинга
+SESSION_STRING = os.environ.get("TELEGRAM_SESSION", "")
 
 # Текст фиксированного автоответа
 WELCOME_MESSAGE = (
@@ -16,8 +18,12 @@ WELCOME_MESSAGE = (
     "(Или могу проигнорить и забыть🤐)"
 )
 
-# Инициализация клиента Telethon
-client = TelegramClient(session_path, API_ID, API_HASH)
+# Проверка наличия сессии перед стартом
+if not SESSION_STRING:
+    print("[-] КРИТИЧЕСКАЯ ОШИБКА: Переменная TELEGRAM_SESSION не найдена в панели хостинга!")
+
+# Инициализация клиента Telethon через StringSession вместо файла
+client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
 
 # Переключатель: включен ли автоответчик (можно выключать/включать командой /away в Избранном)
 AUTO_REPLY_ENABLED = True
@@ -67,7 +73,11 @@ async def handle_new_message(event):
     except Exception as e:
         print(f"[-] Ошибка при отправке автоответа: {e}")
 
+# ----------------------------------------------------------------------
+# 3. АСИНХРОННЫЙ ЗАПУСК ДЛЯ Docker / Bothost
+# ----------------------------------------------------------------------
 if __name__ == "__main__":
     print("🤖 Юзербот-автоответчик успешно запущен и следит за чатами...")
-    client.start()
-    client.run_until_disconnected()
+    # Безопасный запуск в контейнере без интерактивного ввода номера
+    client.loop.run_until_complete(client.start())
+    client.loop.run_until_complete(client.run_until_disconnected())
