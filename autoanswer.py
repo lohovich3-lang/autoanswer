@@ -5,7 +5,9 @@ from telethon import TelegramClient, events
 # 1. НАСТРОЙКИ (Ваши данные)
 # ----------------------------------------------------------------------
 API_ID = int(os.environ.get("API_ID", 0))          # Замените на ваш api_id (число)
-API_HASH = os.environ.get("API_HASH", "") # Замените на ваш api_hash
+API_HASH = os.environ.get("API_HASH", "") # Замените на ваш api_hash - сделано в сайте
+session_path = "/app/user_session"
+
 
 # Текст фиксированного автоответа
 WELCOME_MESSAGE = (
@@ -15,7 +17,7 @@ WELCOME_MESSAGE = (
 )
 
 # Инициализация клиента Telethon
-client = TelegramClient("user_session", API_ID, API_HASH)
+client = TelegramClient(session_path, API_ID, API_HASH)
 
 # Переключатель: включен ли автоответчик (можно выключать/включать командой /away в Избранном)
 AUTO_REPLY_ENABLED = True
